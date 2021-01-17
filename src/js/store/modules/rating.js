@@ -3,11 +3,8 @@ import api from "../utils/api";
 export default {
   namespaced: true,
   state: {
-    table: {
-      headers: [],
-      data: []
-    },
-
+    student: {},
+    table: [],
     averageRating: 0
   },
   actions: {
@@ -27,25 +24,45 @@ export default {
         console.log(data);
 
         if ( status ) {
+          let updateData = data.rating.map(rate => {
+            return {
+              lessonName: rate.lesson.name === 'Основы формирования личности (Социология, Культурология, Психология, Правоведение"' ? 'ОФЛ' : rate.lesson.name,
+              isClose: rate.lesson.isClose ? 'Да' : 'Нет',
+              ...rate.value
+            }
+          })
+
+          console.log(updateData)
+
           commit('UNIQUE_SET', {
             name: 'table',
-            value: data
+            moduleName: 'rating',
+            value: updateData
           }, {
             root: true
           });
 
-          let calcAverage = data.reduce((acc, lesson) => {
-            acc += Number(lesson.data[26])
-
-            return acc
-          }, 0)
-
           commit('UNIQUE_SET', {
-            name: 'averageRating',
-            value: calcAverage / data.length
+            name: 'student',
+            moduleName: 'rating',
+            value: data.student
           }, {
             root: true
-          })
+          });
+
+          // let calcAverage = data.reduce((acc, lesson) => {
+          //   acc += Number(lesson.data[26])
+          //
+          //   return acc
+          // }, 0)
+          //
+          // commit('UNIQUE_SET', {
+          //   name: 'averageRating',
+          //   moduleName: 'rating',
+          //   value: calcAverage / data.length
+          // }, {
+          //   root: true
+          // })
         }
       } catch(e) {
         console.log(e)

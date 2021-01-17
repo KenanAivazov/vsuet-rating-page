@@ -14,7 +14,13 @@ export default new Vuex.Store({
   },
 
   mutations: {
-    UNIQUE_SET(state, { name, value }) {
+    UNIQUE_SET(state, { name, value, moduleName }) {
+      if (moduleName) {
+        state[moduleName][name] = value
+
+        return
+      }
+
       state[name] = value
     }
   },
