@@ -3,14 +3,14 @@ import Vuex from "vuex";
 import api from './utils/api'
 Vue.use(Vuex);
 
-export default new Vuex.Store({
-  state: {
-    table: {
-      headers: [],
-      data: []
-    },
+import rating from "./modules/rating";
 
-    averageRating: 0
+export default new Vuex.Store({
+  modules: {
+    rating
+  },
+  state: {
+
   },
 
   mutations: {
@@ -20,38 +20,6 @@ export default new Vuex.Store({
   },
 
   actions: {
-    async getRating({ state, commit }, form) {
-      try {
-        const {
-          data: {
-            status,
-            data
-          }
-        } = await api.post('/rating/get', form);
 
-        console.log(data);
-
-        if ( status ) {
-          commit('UNIQUE_SET', {
-            name: 'table',
-            value: data
-          });
-
-          let calcAverage = data.reduce((acc, lesson) => {
-            acc += Number(lesson.data[26])
-
-            return acc
-          }, 0)
-
-          commit('UNIQUE_SET', {
-            name: 'averageRating',
-            value: calcAverage / data.length
-          })
-        }
-      } catch(e) {
-        console.log(e)
-        alert(`Возникла ошибка при получении данных. Ошибка: ${e}`)
-      }
-    }
   }
 });

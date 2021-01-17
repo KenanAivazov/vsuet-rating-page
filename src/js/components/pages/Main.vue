@@ -1,24 +1,12 @@
 <script>
   import { mapActions, mapState } from 'vuex';
 
-
   export default {
     data: () => ({
-      faculty: [
-        'УИТС'
-      ],
-      group: [
-          'У-205'
-      ],
-      formValid: false,
-
-      student: JSON.parse(localStorage.getItem('studentData')) || {
-        recordBookNum: undefined,
-        facultyName: undefined,
-        group: undefined
-      },
-
-      buttonLoading: false
+      recordBookNum: '',
+      button: {
+        loading: false
+      }
     }),
     asyncData({ store }) {
     },
@@ -31,28 +19,18 @@
     },
 
     methods: {
-      ...mapActions([
-          'getRating',
-      ]),
+      ...mapActions({
+        getRating: 'rating/get'
+      }),
 
-      async findRating() {
+      findRating() {
         if ( this.$refs.form.validate() ) {
-          console.log(this.student)
-
-          this.buttonLoading = true;
-
-          this.getRating(this.student)
-            .finally(_ => {
-              this.buttonLoading = false;
+          this.button.loading = true;
+          this.getRating(this.recordBookNum)
+            .finally(() => {
+              this.button.loading = false;
             })
-
         }
-      },
-
-      saveData() {
-        localStorage.setItem('studentData', JSON.stringify(this.student));
-
-        alert('Данные успешно сохранены! Теперь форма будет сама заполняться')
       }
     },
 
@@ -63,51 +41,31 @@
 
 <template>
   <section class="col-12">
-    <v-row justify="center">
-      <v-col md="6" sm="12">
-        <v-card>
-          <v-card-text>
-            <v-form ref="form">
-              <v-select
-                  label="Факультет"
-                  filled
-                  required
-                  :rules="[v => !!v || 'Данное поле обязательно']"
-                  v-model="student.facultyName"
-                  :items="faculty"
-              />
+    <div class="g-main-form">
+      <v-form ref="form"
+              class="d-flex flex-column align-center justify-center">
+        <v-text-field
+            outlined
+            rounded
+            required
+            prepend-inner-icon="search"
+            label="Номер зачётки"
+            :rules="[v => !!v || 'Данное поле обязательно']"
+            v-model="recordBookNum"
+        />
+        <v-btn
+            rounded
+            large
+            :disabled="button.loading"
+            :loading="button.loading"
+            @click="findRating"
+            color="primary">
+          Искать
+        </v-btn>
+      </v-form>
+    </div>
 
-              <v-select
-                  label="Группа"
-                  filled
-                  required
-                  :rules="[v => !!v || 'Данное поле обязательно']"
-                  v-model="student.group"
-                  :items="group"
-              />
-
-              <v-text-field
-                  filled
-                  required
-                  label="Номер зачётки"
-                  :rules="[v => !!v || 'Данное поле обязательно']"
-                  v-model="student.recordBookNum"
-              />
-            </v-form>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn color="primary" :disabled="buttonLoading" :loading="buttonLoading" class="d-block ml-auto mr-auto" @click="findRating" rounded>
-              Искать
-            </v-btn>
-            <v-btn color="primary" class="d-block ml-auto mr-auto" @click="saveData" rounded>
-              Сохранить данные
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
-
-    <v-row justify="center" class="mt-10">
+    <v-row justify="center" class="d-none mt-10">
       <v-col class="table-wrapper">
         <v-card class="mb-5">
           <v-card-title class="d-flex justify-center">Средний рейтинг: {{ averageRating }}</v-card-title>

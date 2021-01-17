@@ -1,3 +1,3 @@
 export default {
-  API_URL: 'https://rating.kenan.agency'
+  API_URL: 'http://localhost:8646' //https://rating.kenan.agency
 }

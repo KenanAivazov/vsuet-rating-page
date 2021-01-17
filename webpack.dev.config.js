@@ -130,6 +130,7 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
+      environment: process.env,
       template: './index.template.ejs',
       children: false,
     }),
@@ -137,6 +138,9 @@ module.exports = {
       $: "jquery",
       jQuery: "jquery",
       "window.jQuery": "jquery"
+    }),
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: 'develop'
     }),
     new UglifyJsPlugin({
       uglifyOptions: {

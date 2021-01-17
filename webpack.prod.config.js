@@ -120,6 +120,7 @@ module.exports = {
     new webpack.NoEmitOnErrorsPlugin(),
     new HtmlWebpackPlugin({
       filename: '../index.html',
+      environment: process.env,
       minify: {
         removeComments: true,
         collapseWhitespace: true
@@ -130,6 +131,9 @@ module.exports = {
       $: "jquery",
       jQuery: "jquery",
       "window.jQuery": "jquery"
+    }),
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: 'production'
     }),
     new UglifyJsPlugin({
       uglifyOptions: {

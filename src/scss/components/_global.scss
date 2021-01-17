@@ -1,3 +1,21 @@
 .v-dialog > .v-card > .v-card__text {
   padding: 24px 20px;
 }
+
+.g-main-form {
+  width: 100%;
+  max-width: 600px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  .v-input {
+    width: 100%;
+  }
+
+  .v-btn {
+    width: 100%;
+    max-width: 150px;
+  }
+}
