@@ -3,8 +3,13 @@ import api from "../utils/api";
 export default {
   namespaced: true,
   state: {
-    student: {},
+    student: {
+      recordBookNum: undefined,
+      faculty: {},
+      group: {}
+    },
     table: [],
+    tableHeader: [],
     averageRating: 0
   },
   actions: {
@@ -26,18 +31,34 @@ export default {
         if ( status ) {
           let updateData = data.rating.map(rate => {
             return {
+              ...rate.lesson,
               lessonName: rate.lesson.name === 'Основы формирования личности (Социология, Культурология, Психология, Правоведение"' ? 'ОФЛ' : rate.lesson.name,
               isClose: rate.lesson.isClose ? 'Да' : 'Нет',
-              ...rate.value
+              ...rate
             }
           })
 
-          console.log(updateData)
+          let headers = data.rating.map(rate => {
+            return rate.value.map(item => {
+              return {
+                type: item.type,
+                weight: item.weight
+              }
+            })
+          })
 
           commit('UNIQUE_SET', {
             name: 'table',
             moduleName: 'rating',
             value: updateData
+          }, {
+            root: true
+          });
+
+          commit('UNIQUE_SET', {
+            name: 'tableHeader',
+            moduleName: 'rating',
+            value: headers[0]
           }, {
             root: true
           });

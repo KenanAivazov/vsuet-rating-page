@@ -7,136 +7,6 @@
       button: {
         loading: false
       },
-      headers: [
-        {
-          text: 'Предмет',
-          value: 'lessonName'
-        },
-        {
-          text: 'Лек.',
-          value: '0'
-        },
-        {
-          text: 'Пр.',
-          value: '1'
-        },
-        {
-          text: 'Лаб',
-          value: '2'
-        },
-        {
-          text: 'Др.',
-          value: '3'
-        },
-        {
-          text: 'Итог, 1 КТ',
-          value: '4'
-        },
-        {
-          text: 'Лек.',
-          value: '5'
-        },
-        {
-          text: 'Пр.',
-          value: '6'
-        },
-        {
-          text: 'Лаб',
-          value: '7'
-        },
-        {
-          text: 'Др.',
-          value: '8'
-        },
-        {
-          text: 'Итог, 2 КТ',
-          value: '9'
-        },
-        {
-          text: 'Лек.',
-          value: '10'
-        },
-        {
-          text: 'Пр.',
-          value: '11'
-        },
-        {
-          text: 'Лаб',
-          value: '12'
-        },
-        {
-          text: 'Др.',
-          value: '13'
-        },
-        {
-          text: 'Итог, 3 КТ',
-          value: '14'
-        },
-        {
-          text: 'Лек.',
-          value: '15'
-        },
-        {
-          text: 'Пр.',
-          value: '16'
-        },
-        {
-          text: 'Лаб',
-          value: '17'
-        },
-        {
-          text: 'Др.',
-          value: '18'
-        },
-        {
-          text: 'Итог, 4 КТ',
-          value: '19'
-        },
-        {
-          text: 'Лек.',
-          value: '20'
-        },
-        {
-          text: 'Пр.',
-          value: '21'
-        },
-        {
-          text: 'Лаб',
-          value: '22'
-        },
-        {
-          text: 'Др.',
-          value: '23'
-        },
-        {
-          text: 'Итог, 5 КТ',
-          value: '24'
-        },
-        {
-          text: 'Надбавка',
-          value: '25'
-        },
-        {
-          text: 'Итоговый рейтинг',
-          value: '26'
-        },
-        {
-          text: 'Оценка по рейтингу',
-          value: '27'
-        },
-        {
-          text: 'Зачёт',
-          value: '28'
-        },
-        {
-          text: 'Итог',
-          value: '29'
-        },
-        {
-          text: 'Закрыто',
-          value: 'isClose'
-        }
-      ]
     }),
     asyncData({ store }) {
     },
@@ -144,7 +14,9 @@
     computed: {
       ...mapState({
         table: state => state.rating.table,
-        averageRating: state => state.averageRating
+        student: state => state.rating.student,
+        averageRating: state => state.averageRating,
+        tableHeader: state => state.rating.tableHeader
       })
     },
 
@@ -152,6 +24,45 @@
       ...mapActions({
         getRating: 'rating/get'
       }),
+
+      getColor(rating) {
+        switch(this.detectStage(rating)) {
+          case 1:
+            return 'green'
+          case 2:
+            return 'orange'
+          case 3:
+            return 'red'
+          case 4:
+            return 'white'
+
+        }
+      },
+
+      detectStage(rating) {
+        if ( Number(rating) ) {
+          rating = Number(rating);
+
+          if (rating >= 85) return 1
+          else if (rating >= 75 && rating <= 84) return 2
+          else if (rating <= 74) return 3
+        }
+
+        return 4
+      },
+
+      getText(rating) {
+        switch(this.detectStage(rating)) {
+          case 1:
+            return 'Молодец! Продолжай в том же духе :)'
+          case 2:
+            return 'Неплохо, но тыч можешь лучше'
+          case 3:
+            return 'Попробуй поговорить с преподавателем и исправить данную точку. Я думаю у тебя выйдет исправить :)'
+          case 4:
+            return 'Пусто :('
+        }
+      },
 
       findRating() {
         if ( this.$refs.form.validate() ) {
@@ -174,7 +85,7 @@
 
 <template>
   <section class="col-12">
-    <div class="fill-height d-flex align-center justify-center g-main-wrapper">
+    <div class="d-flex align-center justify-center g-main-wrapper">
       <div class="g-main-form">
         <v-form ref="form"
                 class="d-flex flex-column align-center justify-center">
@@ -197,20 +108,64 @@
             Искать
           </v-btn>
           <p class="mt-5 body-1">
-            Made with ❤ by <a target="_blank" href="https://vk.com/kenan_aivazov">Kenan Ayvazov</a>
+            Made by <a target="_blank" href="https://vk.com/kenan_aivazov">Kenan Ayvazov</a>
           </p>
         </v-form>
       </div>
     </div>
 
+    <v-row justify="center" class="mt-10">
+      <v-col lg="4" md="3">
+        <v-card class="mb-5" v-if="student && student.recordBookNum">
+          <v-card-title>Карточка студента</v-card-title>
+          <v-card-subtitle class="mt-1">
+            <p class="mb-2">Номер зачётки: {{ student.recordBookNum }}</p>
+            <p class="mb-2">Факультет: {{ student.faculty.name }}</p>
+            <p>Группа: {{ student.group.name }}</p>
+          </v-card-subtitle>
+        </v-card>
+      </v-col>
+    </v-row>
+
     <v-row justify="center" ref="table" class="g-main-table">
       <v-col class="table-wrapper">
-        <v-data-table
-            v-if="table.length"
-            :headers="headers"
-            :items="table"
-            hide-default-footer
-        ></v-data-table>
+        <table ref="table" class="table" v-if="table.length">
+          <thead>
+            <tr>
+              <td>
+                Предмет
+              </td>
+              <td v-for="(itemHeader, headerIndex) in tableHeader" :key="headerIndex">
+                {{ itemHeader.type }} <br>
+                {{ itemHeader.weight }}
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(lesson, index) in table" :key="index">
+              <td>
+                <a :href="`${lesson.href}?ref=vsuet-kenan-rating`" target="_blank" rel="noopener">
+                  {{ lesson.lessonName }}
+                </a>
+              </td>
+              <td v-for="(lessonData, lessonIndex) in lesson.value" :key="lessonIndex">
+                <v-tooltip top>
+                  <span>
+                    {{ getText(lessonData.value) }}
+                  </span>
+
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-chip v-bind="attrs"
+                            v-on="on"
+                            :color="getColor(lessonData.value)">
+                      {{ lessonData.value }}
+                    </v-chip>
+                  </template>
+                </v-tooltip>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </v-col>
     </v-row>
   </section>
@@ -218,14 +173,39 @@
 
 <style scoped lang="scss">
   .table {
+    border-collapse: collapse;
 
     &-wrapper {
       overflow: auto;
     }
 
+    thead {
+      td {
+        font-size: 12px;
+        text-align: center;
+      }
+    }
+
+    tr {
+      td {
+        &:first-of-type {
+          padding: 6px 10px;
+        }
+      }
+    }
+
     td {
-      border: 1px solid #eeee;
-      padding: 4px;
+      border: 2px solid #eeee;
+      padding: 6px;
+      font-size: 12px;
+
+      .v-chip.v-size--default {
+        font-size: 12px;
+      }
+
+      a {
+        line-height: 1.2;
+      }
 
       &:not(:first-of-type) {
         text-align: center;

@@ -16,27 +16,19 @@
       max-width: 150px;
     }
   }
-
-  &-table {
-    margin-top: -20vh;
-  }
 }
 
-.v-data-table {
-  td {
-    padding: 10px 16px;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .g-main {
-    &-wrapper {
-      height: auto !important;
-      margin-bottom: 30px;
-    }
-
-    &-table {
-      margin-top: 0;
+.v-chip {
+  &.white {
+    .v-chip__content {
+      color: #555;
     }
   }
 }
+
+.v-tooltip {
+  &__content {
+    background-color: rgb(97, 97, 97);
+  }
+}
+
