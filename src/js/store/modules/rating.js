@@ -31,20 +31,10 @@ export default {
         if ( status ) {
           let updateData = data.rating.map(rate => {
             return {
-              ...rate.lesson,
               lessonName: rate.lesson.name === 'Основы формирования личности (Социология, Культурология, Психология, Правоведение"' ? 'ОФЛ' : rate.lesson.name,
               isClose: rate.lesson.isClose ? 'Да' : 'Нет',
               ...rate
             }
-          })
-
-          let headers = data.rating.map(rate => {
-            return rate.value.map(item => {
-              return {
-                type: item.type,
-                weight: item.weight
-              }
-            })
           })
 
           commit('UNIQUE_SET', {
@@ -58,7 +48,7 @@ export default {
           commit('UNIQUE_SET', {
             name: 'tableHeader',
             moduleName: 'rating',
-            value: headers[0]
+            value: data.ratingHeader
           }, {
             root: true
           });

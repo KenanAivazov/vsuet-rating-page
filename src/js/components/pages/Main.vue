@@ -1,12 +1,19 @@
 <script>
   import { mapActions, mapState } from 'vuex';
+  import TableTrData from "../global/table/TableTrData";
 
   export default {
     data: () => ({
       recordBookNum: '',
+      secondRecordBookNum: '',
+      isVersus: false,
       button: {
         loading: false
       },
+
+      buttonVersus: {
+        loading: false
+      }
     }),
     asyncData({ store }) {
     },
@@ -25,45 +32,6 @@
         getRating: 'rating/get'
       }),
 
-      getColor(rating) {
-        switch(this.detectStage(rating)) {
-          case 1:
-            return 'green'
-          case 2:
-            return 'orange'
-          case 3:
-            return 'red'
-          case 4:
-            return 'white'
-
-        }
-      },
-
-      detectStage(rating) {
-        if ( Number(rating) ) {
-          rating = Number(rating);
-
-          if (rating >= 85) return 1
-          else if (rating >= 75 && rating <= 84) return 2
-          else if (rating <= 74) return 3
-        }
-
-        return 4
-      },
-
-      getText(rating) {
-        switch(this.detectStage(rating)) {
-          case 1:
-            return 'Молодец! Продолжай в том же духе :)'
-          case 2:
-            return 'Неплохо, но тыч можешь лучше'
-          case 3:
-            return 'Попробуй поговорить с преподавателем и исправить данную точку. Я думаю у тебя выйдет исправить :)'
-          case 4:
-            return 'Пусто :('
-        }
-      },
-
       findRating() {
         if ( this.$refs.form.validate() ) {
           this.button.loading = true;
@@ -75,17 +43,23 @@
               });
             })
         }
-      }
+      },
+
+      studentVersus() {
+        this.isVersus = !this.isVersus
+      },
+
     },
 
     components: {
+      TableTrData
     }
   };
 </script>
 
 <template>
-  <section class="col-12">
-    <div class="d-flex align-center justify-center g-main-wrapper">
+  <section class="width-full">
+    <div class="d-flex align-center justify-center g-main-wrapper mt-10">
       <div class="g-main-form">
         <v-form ref="form"
                 class="d-flex flex-column align-center justify-center">
@@ -95,18 +69,44 @@
               required
               prepend-inner-icon="search"
               label="Номер зачётки"
+              :loading="button.loading"
+              :disabled="button.loading"
               :rules="[v => !!v || 'Данное поле обязательно']"
               v-model="recordBookNum"
+              @keypress.enter="findRating"
           />
-          <v-btn
+          <v-text-field
+              outlined
               rounded
-              large
-              :disabled="button.loading"
-              :loading="button.loading"
-              @click="findRating"
-              color="primary">
-            Искать
-          </v-btn>
+              required
+              prepend-inner-icon="search"
+              v-if="isVersus"
+              label="Номер зачётки студента из вашей группы"
+              :rules="[v => !!v || 'Данное поле обязательно']"
+              v-model="secondRecordBookNum"
+              @keypress.enter="studentVersus"
+          />
+          <div class="d-none width-full flex-grow-1 justify-center align-center flex-sm-row flex-column">
+            <v-btn
+                rounded
+                large
+                :disabled="button.loading"
+                :loading="button.loading"
+                @click="findRating"
+                class="mr-0 mr-sm-5 mb-5 mb-sm-0"
+                color="primary">
+              Искать
+            </v-btn>
+            <v-btn
+                rounded
+                large
+                :disabled="buttonVersus.loading"
+                :loading="buttonVersus.loading"
+                @click="studentVersus"
+                color="primary">
+              Сравнить
+            </v-btn>
+          </div>
           <p class="mt-5 body-1">
             Made by <a target="_blank" href="https://vk.com/kenan_aivazov">Kenan Ayvazov</a>
           </p>
@@ -135,35 +135,25 @@
               <td>
                 Предмет
               </td>
-              <td v-for="(itemHeader, headerIndex) in tableHeader" :key="headerIndex">
+              <td v-for="(itemHeader, headerIndex) in tableHeader"
+                  :key="headerIndex"
+                  :class="[
+                    {
+                      'table-item-primary': itemHeader.type.includes('Итог по КТ')
+                    }
+                  ]"
+              >
                 {{ itemHeader.type }} <br>
-                {{ itemHeader.weight }}
+                <b>{{ itemHeader.weight }}</b>
               </td>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(lesson, index) in table" :key="index">
-              <td>
-                <a :href="`${lesson.href}?ref=vsuet-kenan-rating`" target="_blank" rel="noopener">
-                  {{ lesson.lessonName }}
-                </a>
-              </td>
-              <td v-for="(lessonData, lessonIndex) in lesson.value" :key="lessonIndex">
-                <v-tooltip top>
-                  <span>
-                    {{ getText(lessonData.value) }}
-                  </span>
-
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-chip v-bind="attrs"
-                            v-on="on"
-                            :color="getColor(lessonData.value)">
-                      {{ lessonData.value }}
-                    </v-chip>
-                  </template>
-                </v-tooltip>
-              </td>
-            </tr>
+            <table-tr-data
+                v-for="(lesson, index) in table"
+                :key="index"
+                v-bind="lesson"
+            ></table-tr-data>
           </tbody>
         </table>
       </v-col>
@@ -171,16 +161,19 @@
   </section>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
   .table {
     border-collapse: collapse;
+    overflow: hidden;
 
     &-wrapper {
       overflow: auto;
+      margin: 0 10px;
     }
 
     thead {
       td {
+        min-width: 70px;
         font-size: 12px;
         text-align: center;
       }
@@ -212,9 +205,16 @@
       }
     }
 
+    &-item {
+      &-primary {
+        color: #fff;
+        background-color: #757575;
+      }
+    }
+
     @media screen and (max-width: 600px) {
       td {
-        min-width: 300px;
+        min-width: 150px;
 
         &:not(:first-of-type) {
           min-width: 70px;
