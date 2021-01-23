@@ -1,5 +1,5 @@
 <script>
-
+  import DialogModal from "./components/global/modal/DialogModal";
   export default {
     data: () => ({
       navMenu: false
@@ -7,20 +7,11 @@
     asyncData({ store }) {
     },
     computed: {
-
-
-      nameRoute() {
-        return this.$route.name
-      },
-
-      menu() {
-        return this.$router.options.routes[0].children
-      }
     },
     methods: {
     },
     components: {
-
+      DialogModal
     },
     mounted() {
 
@@ -38,5 +29,7 @@
         </v-container>
       </v-content>
     </main>
+
+    <dialog-modal />
   </v-app>
 </template>

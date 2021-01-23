@@ -1,67 +1,86 @@
 <script>
-export default {
-  name: "TableTrData",
-  props: {
-    lesson: Object,
-    value: Object,
-    lessonName: String,
-  },
-  data() {
-    return {
-      showMenu: false
+  import { mapMutations } from "vuex";
+
+  export default {
+    name: "TableTrData",
+    props: {
+      lesson: Object,
+      value: Object,
+      lessonName: String,
+    },
+    data() {
+      return {
+        showMenu: false
+      }
+    },
+
+    methods: {
+      ...mapMutations({
+        unique: 'UNIQUE_SET'
+      }),
+
+      openLink(href) {
+        window.open(`${href}&ref=vsuet-kenan-rating`, '_blank')
+      },
+
+      detectStage(rating) {
+        if ( Number(rating) ) {
+          rating = Number(rating);
+
+          if (rating >= 85) return 1
+          else if (rating >= 75 && rating <= 84) return 2
+          else if (rating <= 74) return 3
+        }
+
+        if (rating === 'Отл') return 1
+        else if (rating === 'Хор') return 2
+        else if (rating === 'Удовл') return 3
+        else if (rating === 'Зачет') return 4
+
+        return false
+      },
+
+      getText(rating) {
+        switch(this.detectStage(rating)) {
+          case 1:
+            return 'Молодец! Продолжай в том же духе :)'
+          case 2:
+            return 'Неплохо, но тыч можешь лучше'
+          case 3:
+            return 'Попробуй поговорить с преподавателем и исправить данную точку. Я думаю у тебя выйдет исправить :)'
+          default:
+            return 'Пусто :('
+        }
+      },
+
+      getColor(rating) {
+        switch(this.detectStage(rating)) {
+          case 1:
+            return 'green'
+          case 2:
+            return 'orange'
+          case 3:
+            return 'red'
+          case 4:
+            return 'green'
+
+        }
+      },
+
+      openGroupModal() {
+        this.unique({
+          name: 'modal',
+          value: {
+            active: true,
+            content: 'GroupList',
+            data: {
+              header: 'Список одногруппников'
+            }
+          }
+        })
+      }
     }
-  },
-
-  methods: {
-    openLink(href) {
-      window.open(`${href}&ref=vsuet-kenan-rating`, '_blank')
-    },
-
-    detectStage(rating) {
-      if ( Number(rating) ) {
-        rating = Number(rating);
-
-        if (rating >= 85) return 1
-        else if (rating >= 75 && rating <= 84) return 2
-        else if (rating <= 74) return 3
-      }
-
-      if (rating === 'Отл') return 1
-      else if (rating === 'Хор') return 2
-      else if (rating === 'Удовл') return 3
-      else if (rating === 'Зачет') return 4
-
-      return false
-    },
-
-    getText(rating) {
-      switch(this.detectStage(rating)) {
-        case 1:
-          return 'Молодец! Продолжай в том же духе :)'
-        case 2:
-          return 'Неплохо, но тыч можешь лучше'
-        case 3:
-          return 'Попробуй поговорить с преподавателем и исправить данную точку. Я думаю у тебя выйдет исправить :)'
-        default:
-          return 'Пусто :('
-      }
-    },
-
-    getColor(rating) {
-      switch(this.detectStage(rating)) {
-        case 1:
-          return 'green'
-        case 2:
-          return 'orange'
-        case 3:
-          return 'red'
-        case 4:
-          return 'green'
-
-      }
-    },
   }
-}
 </script>
 
 <template>
@@ -78,7 +97,7 @@ export default {
           </v-list-item-title>
         </v-list-item>
         <v-list-item link>
-          <v-list-item-title>
+          <v-list-item-title @click="openGroupModal">
             Сравнить рейтинг по <b>"{{ lessonName }}"</b> с другими одногруппниками
           </v-list-item-title>
         </v-list-item>
