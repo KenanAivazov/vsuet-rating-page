@@ -43,6 +43,7 @@
 
 <style scoped>
   .v-card__text {
+    padding-bottom: 0 !important;
     padding-top: 0 !important;
   }
 </style>

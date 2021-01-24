@@ -62,6 +62,7 @@
     <div class="d-flex align-center justify-center g-main-wrapper mt-10">
       <div class="g-main-form">
         <v-form ref="form"
+                @submit.prevent="findRating"
                 class="d-flex flex-column align-center justify-center">
           <v-text-field
               outlined
@@ -73,7 +74,6 @@
               :disabled="button.loading"
               :rules="[v => !!v || 'Данное поле обязательно']"
               v-model="recordBookNum"
-              @keypress.enter="findRating"
           />
           <v-text-field
               outlined
@@ -168,7 +168,7 @@
 
     &-wrapper {
       overflow: auto;
-      margin: 0 10px;
+      margin-right: 10px;
     }
 
     thead {

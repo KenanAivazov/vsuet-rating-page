@@ -1,3 +1,3 @@
 export default {
-  API_URL: 'http://localhost:8646' //https://rating.kenan.agency
+  API_URL: process.env.NODE_ENV === 'production' ? 'https://rating.kenan.agency' : 'https://localhost:8646' //
 }

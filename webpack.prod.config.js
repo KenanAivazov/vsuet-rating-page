@@ -120,6 +120,7 @@ module.exports = {
     new webpack.NoEmitOnErrorsPlugin(),
     new HtmlWebpackPlugin({
       filename: '../index.html',
+      inject: true,
       environment: process.env,
       minify: {
         removeComments: true,
