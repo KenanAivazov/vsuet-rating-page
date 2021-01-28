@@ -23,6 +23,10 @@
         window.open(`${href}&ref=vsuet-kenan-rating`, '_blank')
       },
 
+      parseDate(date) {
+        return date ? new Date(date).toLocaleDateString('ru-Ru') : 'не указано'
+      },
+
       detectStage(rating) {
         if ( Number(rating) ) {
           rating = Number(rating);
@@ -45,7 +49,7 @@
           case 1:
             return 'Молодец! Продолжай в том же духе :)'
           case 2:
-            return 'Неплохо, но тыч можешь лучше'
+            return 'Неплохо, но ты можешь лучше'
           case 3:
             return 'Попробуй поговорить с преподавателем и исправить данную точку. Я думаю у тебя выйдет исправить :)'
           default:
@@ -113,6 +117,8 @@
             <b>
               {{ lesson.type }}
             </b>
+            <br>
+            Дата: {{ parseDate(lesson.createdTime) }}
           </span>
         </td>
       </template>
