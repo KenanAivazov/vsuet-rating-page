@@ -1,5 +1,5 @@
 <script>
-  import { mapMutations } from "vuex";
+  import { mapMutations, mapState } from "vuex";
 
   export default {
     name: "TableTrData",
@@ -21,10 +21,6 @@
 
       openLink(href) {
         window.open(`${href}&ref=vsuet-kenan-rating`, '_blank')
-      },
-
-      parseDate(date) {
-        return date ? new Date(date).toLocaleDateString('ru-Ru') : 'не указано'
       },
 
       detectStage(rating) {
@@ -117,8 +113,6 @@
             <b>
               {{ lesson.type }}
             </b>
-            <br>
-            Дата: {{ parseDate(lesson.createdTime) }}
           </span>
         </td>
       </template>

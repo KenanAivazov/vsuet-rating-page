@@ -23,7 +23,8 @@
         table: state => state.rating.table,
         student: state => state.rating.student,
         averageRating: state => state.averageRating,
-        tableHeader: state => state.rating.tableHeader
+        tableHeader: state => state.rating.tableHeader,
+        actualDate: state => state.rating.actualDate
       })
     },
 
@@ -121,7 +122,8 @@
           <v-card-subtitle class="mt-1">
             <p class="mb-2">Номер зачётки: {{ student.recordBookNum }}</p>
             <p class="mb-2">Факультет: {{ student.faculty.name }}</p>
-            <p>Группа: {{ student.group.name }}</p>
+            <p class="mb-2">Группа: {{ student.group.name }}</p>
+            <p>Дата сбора данных: {{ actualDate }}</p>
           </v-card-subtitle>
         </v-card>
       </v-col>

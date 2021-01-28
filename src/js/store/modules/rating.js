@@ -8,6 +8,7 @@ export default {
       faculty: {},
       group: {}
     },
+    actualDate: '',
     table: [],
     tableHeader: [],
     averageRating: 0
@@ -52,6 +53,14 @@ export default {
           }, {
             root: true
           });
+
+          commit('UNIQUE_SET', {
+            name: 'actualDate',
+            moduleName: 'rating',
+            value: new Date(data.rating[0].createdTime).toLocaleDateString('ru-Ru')
+          }, {
+            root: true
+          })
 
           commit('UNIQUE_SET', {
             name: 'student',
