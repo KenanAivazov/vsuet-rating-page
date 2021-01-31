@@ -46,9 +46,13 @@
         }
       },
 
-      studentVersus() {
-        this.isVersus = !this.isVersus
-      },
+      parseDate(date) {
+        return new Date(date).toLocaleDateString('ru-Ru', {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'long'
+        })
+      }
 
     },
 
@@ -123,7 +127,7 @@
             <p class="mb-2">Номер зачётки: {{ student.recordBookNum }}</p>
             <p class="mb-2">Факультет: {{ student.faculty.name }}</p>
             <p class="mb-2">Группа: {{ student.group.name }}</p>
-            <p>Дата сбора данных: {{ actualDate }}</p>
+            <p>Дата сбора данных: <b>{{ parseDate(student.ratingUpdatedAt) }}</b></p>
           </v-card-subtitle>
         </v-card>
       </v-col>
