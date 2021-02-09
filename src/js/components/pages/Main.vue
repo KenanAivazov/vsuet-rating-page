@@ -1,5 +1,5 @@
 <script>
-  import { mapActions, mapState } from 'vuex';
+import {mapActions, mapMutations, mapState} from 'vuex';
   import TableTrData from "../global/table/TableTrData";
 
   export default {
@@ -33,6 +33,10 @@
         getRating: 'rating/get'
       }),
 
+      ...mapMutations({
+        unique: 'UNIQUE_SET'
+      }),
+
       findRating() {
         if ( this.$refs.form.validate() ) {
           this.button.loading = true;
@@ -44,6 +48,29 @@
               });
             })
         }
+      },
+
+      getActualDate(date) {
+        if (Array.isArray(date)) {
+          return this.parseDate(date[date.length - 1])
+        }
+
+        return date
+      },
+
+      openDateModal() {
+        this.unique({
+          name: 'modal',
+          value: {
+            active: true,
+            content: 'GroupList',
+            data: {
+              header: 'Сохранённые даты',
+              type: 'date',
+              list: this.student.ratingUpdatedAt
+            }
+          }
+        })
       },
 
       parseDate(date) {
@@ -120,15 +147,20 @@
     </div>
 
     <v-row justify="center" class="mt-10">
-      <v-col lg="4" md="3">
+      <v-col md="4">
         <v-card class="mb-5" v-if="student && student.recordBookNum">
           <v-card-title>Карточка студента</v-card-title>
           <v-card-subtitle class="mt-1">
             <p class="mb-2">Номер зачётки: {{ student.recordBookNum }}</p>
             <p class="mb-2">Факультет: {{ student.faculty.name }}</p>
             <p class="mb-2">Группа: {{ student.group.name }}</p>
-            <p>Дата сбора данных: <b>{{ parseDate(student.ratingUpdatedAt) }}</b></p>
+            <p>Последняя дата сбора данных: <b>{{ getActualDate(student.ratingUpdatedAt) }}</b></p>
           </v-card-subtitle>
+          <v-card-actions>
+            <v-btn
+                @click="openDateModal"
+                color="primary">Сохранённые даты</v-btn>
+          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>

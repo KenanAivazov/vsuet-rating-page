@@ -19,8 +19,6 @@ export default {
           }
         });
 
-        console.log(data, status);
-
         commit('UNIQUE_SET', {
           moduleName: 'student',
           name: 'data',

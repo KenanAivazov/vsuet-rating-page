@@ -10,33 +10,66 @@
 
     computed: {
       ...mapState({
-        modal: state => state.modal,
-        students: state => state.student.data
-      })
+        modal: state => state.modal
+      }),
+
+      normalizeList() {
+        if (this.modal.data.store) {
+          let { name, moduleName } = this.modal.data.store;
+
+          return this.$store.state[moduleName][name]
+        }
+
+        return this.modal.data.list
+      }
+    },
+
+    methods: {
+      pickListItem(el) {
+        console.log(el)
+      },
+
+      normalizeData(el) {
+        switch(this.modal.data.type) {
+          case 'date':
+            return new Date(el).toLocaleDateString('ru-Ru', {
+              weekday: 'long',
+              day: 'numeric',
+              month: 'long'
+            })
+
+          case 'student':
+            return el.recordBookNum
+
+          default:
+            return el
+        }
+      }
     },
 
     mounted() {
-      this.$store.dispatch('student/getAllGroup')
+
     }
   }
 </script>
 
 <template>
   <v-card-text style="height: 300px;">
-    <v-list v-if="students">
+    <v-list v-if="modal.data.list || modal.data.store">
       <v-list-item
-          v-for="(student, studentIndex) in students"
+          v-for="(element, elementIndex) in normalizeList"
           link
-          :key="studentIndex"
+          :key="elementIndex"
+          @click="pickListItem(element)"
       >
         <v-list-item-title>
-          {{ student.recordBookNum }}
+          {{ normalizeData(element) }}
         </v-list-item-title>
       </v-list-item>
 
     </v-list>
     <p v-else>
-      Не удалось получить всех студентов вашей группы. Сорян :/
+      {{ modal.data.errorText }}
     </p>
   </v-card-text>
 </template>

@@ -7,6 +7,7 @@
       lesson: Object,
       value: Object,
       lessonName: String,
+      createdTime: String
     },
     data() {
       return {
@@ -67,14 +68,22 @@
         }
       },
 
-      openGroupModal() {
+      async openGroupModal() {
+        await this.$store.dispatch('student/getAllGroup')
+
         this.unique({
           name: 'modal',
           value: {
             active: true,
             content: 'GroupList',
             data: {
-              header: 'Список одногруппников'
+              header: 'Список одногруппников',
+              store: {
+                name: 'data',
+                moduleName: 'student'
+              },
+              type: 'student',
+              errorText: 'Не удалось получить всех студентов вашей группы. Сорян :/'
             }
           }
         })
