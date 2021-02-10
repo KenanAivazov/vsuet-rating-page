@@ -1,6 +1,6 @@
 <script>
   import { mapState, mapMutations } from 'vuex';
-  import GroupList from "./content/GroupList";
+  import GroupList from "./content/GroupList/Index";
 
   export default {
     name: "DialogModal",

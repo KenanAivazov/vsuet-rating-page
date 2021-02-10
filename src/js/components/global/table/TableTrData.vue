@@ -68,9 +68,7 @@
         }
       },
 
-      async openGroupModal() {
-        await this.$store.dispatch('student/getAllGroup')
-
+      openGroupModal() {
         this.unique({
           name: 'modal',
           value: {
@@ -78,11 +76,7 @@
             content: 'GroupList',
             data: {
               header: 'Список одногруппников',
-              store: {
-                name: 'data',
-                moduleName: 'student'
-              },
-              type: 'student',
+              component: 'StudentList',
               errorText: 'Не удалось получить всех студентов вашей группы. Сорян :/'
             }
           }

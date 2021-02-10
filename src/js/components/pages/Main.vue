@@ -66,7 +66,7 @@ import {mapActions, mapMutations, mapState} from 'vuex';
             content: 'GroupList',
             data: {
               header: 'Сохранённые даты',
-              type: 'date',
+              component: 'DateList',
               list: this.student.ratingUpdatedAt
             }
           }
