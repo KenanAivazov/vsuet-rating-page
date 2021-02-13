@@ -1,5 +1,5 @@
 <script>
-import { mapState, mapMutations } from 'vuex';
+import {mapState, mapMutations, mapActions} from 'vuex';
 
 export default {
   data() {
@@ -10,13 +10,37 @@ export default {
 
   computed: {
     ...mapState({
-      modal: state => state.modal
+      modal: state => state.modal,
+      student: state => state.rating.student
     }),
   },
 
   methods: {
+    ...mapActions({
+      getRating: 'rating/get'
+    }),
+
+    ...mapMutations({
+      unique: 'UNIQUE_SET'
+    }),
+
     pickListItem(el) {
       console.log(el)
+      this.getRating({
+        date: el
+      })
+
+      this.unique({
+        name: 'modal',
+
+        value: {
+          active: false,
+          content: '',
+          data: {
+            header: ''
+          }
+        }
+      })
     },
 
     normalizeDate(el) {
@@ -37,7 +61,7 @@ export default {
 <template>
   <div>
     <v-list-item
-        v-for="(date, dateIndex) in modal.data.list"
+        v-for="(date, dateIndex) in student.ratingUpdatedAt"
         link
         :key="dateIndex"
         @click="pickListItem(date)"

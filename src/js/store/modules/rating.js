@@ -14,7 +14,10 @@ export default {
     averageRating: 0
   },
   actions: {
-    async get({ state, commit }, recordBookNum) {
+    async get({ state, rootState, commit }, { recordBookNum, date = '' }) {
+
+      let bookNum = recordBookNum || rootState.rating.student.recordBookNum;
+
       try {
         const {
           data: {
@@ -23,7 +26,8 @@ export default {
           }
         } = await api.get('/rating/get', {
           params: {
-            student: recordBookNum
+            student: bookNum,
+            date
           }
         });
 
@@ -61,6 +65,24 @@ export default {
           }, {
             root: true
           });
+
+          if ( date ) {
+            return commit('UNIQUE_SET', {
+              name: 'actualDate',
+              moduleName: 'rating',
+              value: date
+            }, {
+              root: true
+            })
+          }
+
+          commit('UNIQUE_SET', {
+            name: 'actualDate',
+            moduleName: 'rating',
+            value: data.student.ratingUpdatedAt[data.student.ratingUpdatedAt.length - 1]
+          }, {
+            root: true
+          })
 
           // let calcAverage = data.reduce((acc, lesson) => {
           //   acc += Number(lesson.data[26])

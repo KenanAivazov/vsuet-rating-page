@@ -40,7 +40,9 @@ import {mapActions, mapMutations, mapState} from 'vuex';
       findRating() {
         if ( this.$refs.form.validate() ) {
           this.button.loading = true;
-          this.getRating(this.recordBookNum)
+          this.getRating({
+            recordBookNum: this.recordBookNum
+          })
             .finally(() => {
               this.button.loading = false;
               this.$refs.table.scrollIntoView({
@@ -51,11 +53,7 @@ import {mapActions, mapMutations, mapState} from 'vuex';
       },
 
       getActualDate(date) {
-        if (Array.isArray(date)) {
-          return this.parseDate(date[date.length - 1])
-        }
-
-        return date
+        return this.parseDate(date)
       },
 
       openDateModal() {
@@ -67,7 +65,6 @@ import {mapActions, mapMutations, mapState} from 'vuex';
             data: {
               header: 'Сохранённые даты',
               component: 'DateList',
-              list: this.student.ratingUpdatedAt
             }
           }
         })
@@ -107,38 +104,6 @@ import {mapActions, mapMutations, mapState} from 'vuex';
               :rules="[v => !!v || 'Данное поле обязательно']"
               v-model="recordBookNum"
           />
-          <v-text-field
-              outlined
-              rounded
-              required
-              prepend-inner-icon="search"
-              v-if="isVersus"
-              label="Номер зачётки студента из вашей группы"
-              :rules="[v => !!v || 'Данное поле обязательно']"
-              v-model="secondRecordBookNum"
-              @keypress.enter="studentVersus"
-          />
-          <div class="d-none width-full flex-grow-1 justify-center align-center flex-sm-row flex-column">
-            <v-btn
-                rounded
-                large
-                :disabled="button.loading"
-                :loading="button.loading"
-                @click="findRating"
-                class="mr-0 mr-sm-5 mb-5 mb-sm-0"
-                color="primary">
-              Искать
-            </v-btn>
-            <v-btn
-                rounded
-                large
-                :disabled="buttonVersus.loading"
-                :loading="buttonVersus.loading"
-                @click="studentVersus"
-                color="primary">
-              Сравнить
-            </v-btn>
-          </div>
           <p class="mt-5 body-1">
             Made by <a target="_blank" href="https://vk.com/kenan_aivazov">Kenan Ayvazov</a>
           </p>
@@ -154,7 +119,7 @@ import {mapActions, mapMutations, mapState} from 'vuex';
             <p class="mb-2">Номер зачётки: {{ student.recordBookNum }}</p>
             <p class="mb-2">Факультет: {{ student.faculty.name }}</p>
             <p class="mb-2">Группа: {{ student.group.name }}</p>
-            <p>Последняя дата сбора данных: <b>{{ getActualDate(student.ratingUpdatedAt) }}</b></p>
+            <p>Дата сбора данных: <b>{{ getActualDate(actualDate) }}</b></p>
           </v-card-subtitle>
           <v-card-actions>
             <v-btn
