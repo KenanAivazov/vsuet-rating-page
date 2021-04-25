@@ -45,9 +45,6 @@ import {mapActions, mapMutations, mapState} from 'vuex';
           })
             .finally(() => {
               this.button.loading = false;
-              this.$refs.table.scrollIntoView({
-                behavior: "smooth"
-              });
             })
         }
       },
@@ -119,44 +116,50 @@ import {mapActions, mapMutations, mapState} from 'vuex';
             <p class="mb-2">Номер зачётки: {{ student.recordBookNum }}</p>
             <p class="mb-2">Факультет: {{ student.faculty.name }}</p>
             <p class="mb-2">Группа: {{ student.group.name }}</p>
-            <p>Дата сбора данных: <b>{{ getActualDate(actualDate) }}</b></p>
           </v-card-subtitle>
-          <v-card-actions>
-            <v-btn
-                @click="openDateModal"
-                color="primary">Сохранённые даты</v-btn>
-          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
 
-    <v-row justify="center" ref="table" class="g-main-table">
+    <v-row justify="center" ref="table" class="g-main-table" v-for="(lesson, lessonIndex) in table">
       <v-col class="table-wrapper">
+        <h2 class="mb-5">
+          <a :href="lesson.lesson.href" target="_blank">
+            {{ lesson.lesson.name }}
+          </a>
+        </h2>
         <table ref="table" class="table" v-if="table.length">
           <thead>
-            <tr>
-              <td>
-                Предмет
-              </td>
-              <td v-for="(itemHeader, headerIndex) in tableHeader"
-                  :key="headerIndex"
+            <tr v-for="(lessonHeader) in lesson.lesson.header">
+              <td
+                  v-for="(headerItem, headerItemIndex) in lessonHeader.children"
+                  :key="headerItemIndex"
+                  :rowspan="headerItem.rowSpan"
+                  :colspan="headerItem.colSpan"
                   :class="[
-                    {
-                      'table-item-primary': itemHeader.type.includes('Итог по КТ')
-                    }
+                      {
+                        'table-item-primary': headerItem.text.includes('Итог по')
+                      }
                   ]"
               >
-                {{ itemHeader.type }} <br>
-                <b>{{ itemHeader.weight }}</b>
+                {{ headerItem.text }}
               </td>
             </tr>
           </thead>
           <tbody>
-            <table-tr-data
-                v-for="(lesson, index) in table"
-                :key="index"
-                v-bind="lesson"
-            ></table-tr-data>
+            <tr>
+              <td
+                  v-for="(value, valueIndex) in lesson.value"
+                  :key="valueIndex"
+                  :class="[
+                      {
+                        'table-item-primary': !(valueIndex % 4)
+                      }
+                  ]"
+              >
+                {{ value }}
+              </td>
+            </tr>
           </tbody>
         </table>
       </v-col>
@@ -175,6 +178,13 @@ import {mapActions, mapMutations, mapState} from 'vuex';
     }
 
     thead {
+      tr {
+        &:nth-of-type(1) {
+          td:nth-of-type(1), td:nth-of-type(2), td:nth-of-type(3) {
+            display: none;
+          }
+        }
+      }
       td {
         min-width: 70px;
         font-size: 12px;
@@ -194,6 +204,7 @@ import {mapActions, mapMutations, mapState} from 'vuex';
       border: 2px solid #eeee;
       padding: 6px;
       font-size: 12px;
+      text-align: center;
 
       .v-chip.v-size--default {
         font-size: 12px;
@@ -201,10 +212,6 @@ import {mapActions, mapMutations, mapState} from 'vuex';
 
       a {
         line-height: 1.2;
-      }
-
-      &:not(:first-of-type) {
-        text-align: center;
       }
     }
 
