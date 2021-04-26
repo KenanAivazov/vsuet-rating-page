@@ -1,5 +1,4 @@
 <script>
-  import DialogModal from "./components/global/modal/DialogModal";
   export default {
     data: () => ({
       navMenu: false
@@ -11,7 +10,6 @@
     methods: {
     },
     components: {
-      DialogModal
     },
     mounted() {
 
@@ -29,7 +27,5 @@
         </v-container>
       </v-content>
     </main>
-
-    <dialog-modal />
   </v-app>
 </template>

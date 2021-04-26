@@ -1,11 +1,9 @@
 <script>
-import {mapActions, mapMutations, mapState} from 'vuex';
-  import TableTrData from "../global/table/TableTrData";
+  import {mapActions, mapMutations, mapState} from 'vuex';
 
   export default {
     data: () => ({
       recordBookNum: '',
-      secondRecordBookNum: '',
       isVersus: false,
       button: {
         loading: false
@@ -15,16 +13,12 @@ import {mapActions, mapMutations, mapState} from 'vuex';
         loading: false
       }
     }),
-    asyncData({ store }) {
-    },
 
     computed: {
       ...mapState({
         table: state => state.rating.table,
         student: state => state.rating.student,
-        averageRating: state => state.averageRating,
         tableHeader: state => state.rating.tableHeader,
-        actualDate: state => state.rating.actualDate
       })
     },
 
@@ -48,45 +42,18 @@ import {mapActions, mapMutations, mapState} from 'vuex';
             })
         }
       },
-
-      getActualDate(date) {
-        return this.parseDate(date)
-      },
-
-      openDateModal() {
-        this.unique({
-          name: 'modal',
-          value: {
-            active: true,
-            content: 'GroupList',
-            data: {
-              header: 'Сохранённые даты',
-              component: 'DateList',
-            }
-          }
-        })
-      },
-
-      parseDate(date) {
-        return new Date(date).toLocaleDateString('ru-Ru', {
-          weekday: 'long',
-          day: 'numeric',
-          month: 'long'
-        })
-      }
-
     },
-
-    components: {
-      TableTrData
-    }
   };
 </script>
 
 <template>
   <section class="width-full">
-    <div class="d-flex align-center justify-center g-main-wrapper mt-10">
+    <div class="d-flex align-center justify-center g-main-wrapper mt-5">
       <div class="g-main-form">
+        <p class="mt-0 body-1 mb-3">
+          Made by <a target="_blank" href="https://vk.com/kenan_aivazov">Kenan Ayvazov</a>
+        </p>
+        <p class="body-1 mt-0 mb-5">Версия: 2.1.0</p>
         <v-form ref="form"
                 @submit.prevent="findRating"
                 class="d-flex flex-column align-center justify-center">
@@ -101,9 +68,6 @@ import {mapActions, mapMutations, mapState} from 'vuex';
               :rules="[v => !!v || 'Данное поле обязательно']"
               v-model="recordBookNum"
           />
-          <p class="mt-5 body-1">
-            Made by <a target="_blank" href="https://vk.com/kenan_aivazov">Kenan Ayvazov</a>
-          </p>
         </v-form>
       </div>
     </div>
@@ -121,25 +85,34 @@ import {mapActions, mapMutations, mapState} from 'vuex';
       </v-col>
     </v-row>
 
-    <v-row justify="center" ref="table" class="g-main-table" v-for="(lesson, lessonIndex) in table">
+    <v-row
+        justify="center"
+        ref="table"
+        class="g-main-table"
+        v-for="(rating, ratingIndex) in table"
+        :key="ratingIndex"
+    >
       <v-col class="table-wrapper">
         <h2 class="mb-5">
-          <a :href="lesson.lesson.href" target="_blank">
-            {{ lesson.lesson.name }}
+          <a :href="rating.lesson.href" target="_blank">
+            {{ rating.lesson.name }}
           </a>
+          <br>
+          {{ rating.lesson.type }}
         </h2>
-        <table ref="table" class="table" v-if="table.length">
+        <table ref="table" class="table">
           <thead>
-            <tr v-for="(lessonHeader) in lesson.lesson.header">
+            <tr v-for="(ratingHeader) in rating.lesson.header">
               <td
-                  v-for="(headerItem, headerItemIndex) in lessonHeader.children"
+                  v-for="(headerItem, headerItemIndex) in ratingHeader.children"
                   :key="headerItemIndex"
                   :rowspan="headerItem.rowSpan"
                   :colspan="headerItem.colSpan"
+                  :hidden="!headerItem.text"
                   :class="[
                       {
                         'table-item-primary': headerItem.text.includes('Итог по')
-                      }
+                      },
                   ]"
               >
                 {{ headerItem.text }}
@@ -149,13 +122,8 @@ import {mapActions, mapMutations, mapState} from 'vuex';
           <tbody>
             <tr>
               <td
-                  v-for="(value, valueIndex) in lesson.value"
+                  v-for="(value, valueIndex) in rating.value"
                   :key="valueIndex"
-                  :class="[
-                      {
-                        'table-item-primary': !(valueIndex % 4)
-                      }
-                  ]"
               >
                 {{ value }}
               </td>
@@ -168,6 +136,12 @@ import {mapActions, mapMutations, mapState} from 'vuex';
 </template>
 
 <style lang="scss">
+  .v-application {
+    a {
+      color: #d72a2a !important;
+    }
+  }
+
   .table {
     border-collapse: collapse;
     overflow: hidden;
@@ -184,11 +158,26 @@ import {mapActions, mapMutations, mapState} from 'vuex';
             display: none;
           }
         }
+
+        &:last-of-type {
+          td {
+            border-bottom-color: #000;
+          }
+        }
       }
+
       td {
         min-width: 70px;
         font-size: 12px;
         text-align: center;
+
+        &:empty {
+          display: none;
+        }
+
+        @media screen and (max-width: 600px) {
+          min-width: 50px;
+        }
       }
     }
 
@@ -215,20 +204,17 @@ import {mapActions, mapMutations, mapState} from 'vuex';
       }
     }
 
-    &-item {
-      &-primary {
-        color: #fff;
-        background-color: #757575;
+    tbody {
+      td {
+        border-color: #000;
       }
     }
 
-    @media screen and (max-width: 600px) {
-      td {
-        min-width: 150px;
-
-        &:not(:first-of-type) {
-          min-width: 70px;
-        }
+    &-item {
+      &-primary {
+        color: #fff;
+        border-color: #757575 !important;
+        background-color: #757575;
       }
     }
   }
