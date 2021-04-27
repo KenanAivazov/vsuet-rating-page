@@ -22,6 +22,10 @@ import Vuetify, {
   VCardTitle,
   VForm,
   VChip,
+  VExpansionPanels,
+  VExpansionPanel,
+  VExpansionPanelHeader,
+  VExpansionPanelContent,
 } from 'vuetify/lib'
 
 import ru from 'vuetify/es5/locale/ru'
@@ -46,6 +50,10 @@ Vue.use(Vuetify, {
     VCardTitle,
     VForm,
     VChip,
+    VExpansionPanels,
+    VExpansionPanel,
+    VExpansionPanelHeader,
+    VExpansionPanelContent,
   },
   directives: {
     Ripple

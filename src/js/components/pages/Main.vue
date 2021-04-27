@@ -42,6 +42,40 @@
             })
         }
       },
+
+      detectStage(rating) {
+        if ( Number(rating) ) {
+          rating = Number(rating);
+
+          if (rating >= 85) return 1
+          else if (rating >= 75 && rating <= 84) return 2
+          else if (rating <= 74) return 3
+        }
+
+        if (rating === 'Отл') return 1
+        else if (rating === 'Хор') return 2
+        else if (rating === 'Удовл') return 3
+        else if (rating === 'Зачет') return 4
+
+        return false
+      },
+
+      getColor(rating) {
+        switch(this.detectStage(rating)) {
+          case 1:
+            return 'green'
+          case 2:
+            return 'orange'
+          case 3:
+            return 'red'
+          case 4:
+            return 'green'
+        }
+      },
+
+      hideHeaderElements(item, index) {
+        return [1].includes(index) && !item.text.includes('Итог по') && !item.text.includes('Экзамен');
+      }
     },
   };
 </script>
@@ -72,7 +106,7 @@
       </div>
     </div>
 
-    <v-row justify="center" class="mt-10">
+    <v-row justify="center" class="mt-5">
       <v-col md="4">
         <v-card class="mb-5" v-if="student && student.recordBookNum">
           <v-card-title>Карточка студента</v-card-title>
@@ -88,48 +122,66 @@
     <v-row
         justify="center"
         ref="table"
-        class="g-main-table"
-        v-for="(rating, ratingIndex) in table"
-        :key="ratingIndex"
     >
       <v-col class="table-wrapper">
-        <h2 class="mb-5">
-          <a :href="rating.lesson.href" target="_blank">
-            {{ rating.lesson.name }}
-          </a>
-          <br>
-          {{ rating.lesson.type }}
-        </h2>
-        <table ref="table" class="table">
-          <thead>
-            <tr v-for="(ratingHeader) in rating.lesson.header">
-              <td
-                  v-for="(headerItem, headerItemIndex) in ratingHeader.children"
-                  :key="headerItemIndex"
-                  :rowspan="headerItem.rowSpan"
-                  :colspan="headerItem.colSpan"
-                  :hidden="!headerItem.text"
-                  :class="[
-                      {
-                        'table-item-primary': headerItem.text.includes('Итог по')
-                      },
+        <v-expansion-panels focusable popout>
+          <v-expansion-panel
+              v-for="(rating, ratingIndex) in table"
+              :key="ratingIndex"
+          >
+            <v-expansion-panel-header>
+              <div class="table-header">
+                <h3 class="mb-0">
+                  {{ rating.lesson.name }}
+                </h3>
+                <h4 class="mt-2 mb-0">
+                  {{ rating.lesson.type }}
+                </h4>
+              </div>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <div class="mt-3">
+                <a :href="rating.lesson.href" target="_blank" class="d-block mb-3">Оригинал</a>
+
+                <table ref="table" class="table">
+                  <thead>
+                  <tr
+                      v-for="(ratingHeader, ratingHeaderIndex) in rating.lesson.header"
+                  >
+                    <td
+                        v-for="(headerItem, headerItemIndex) in ratingHeader.children"
+                        :key="headerItemIndex"
+                        :rowspan="headerItem.rowSpan"
+                        :colspan="headerItem.colSpan"
+                        :hidden="!headerItem.text"
+                        :class="[
+                    {
+                      'table-item-primary': headerItem.text.includes('Итог по')
+                    },
+
                   ]"
-              >
-                {{ headerItem.text }}
-              </td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td
-                  v-for="(value, valueIndex) in rating.value"
-                  :key="valueIndex"
-              >
-                {{ value }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                    >
+                      {{ headerItem.text }}
+                    </td>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td
+                        v-for="(value, valueIndex) in rating.value"
+                        :key="valueIndex"
+                    >
+                      <v-chip :color="getColor(value)">
+                        {{ value }}
+                      </v-chip>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
       </v-col>
     </v-row>
   </section>
@@ -142,13 +194,29 @@
     }
   }
 
+  .v-expansion-panel-content__wrap {
+    overflow-y: auto;
+  }
+
+  .v-expansion-panels--popout>.v-expansion-panel {
+    max-width: 100%;
+  }
+
   .table {
     border-collapse: collapse;
     overflow: hidden;
 
+    &-header {
+      position: sticky;
+      left: 0;
+
+      h3 {
+        color: #d72a2a;
+      }
+    }
+
     &-wrapper {
       overflow: auto;
-      margin-right: 10px;
     }
 
     thead {
@@ -156,12 +224,6 @@
         &:nth-of-type(1) {
           td:nth-of-type(1), td:nth-of-type(2), td:nth-of-type(3) {
             display: none;
-          }
-        }
-
-        &:last-of-type {
-          td {
-            border-bottom-color: #000;
           }
         }
       }
@@ -176,7 +238,7 @@
         }
 
         @media screen and (max-width: 600px) {
-          min-width: 50px;
+          min-width: 40px;
         }
       }
     }
@@ -204,17 +266,20 @@
       }
     }
 
-    tbody {
-      td {
-        border-color: #000;
-      }
-    }
-
     &-item {
       &-primary {
         color: #fff;
         border-color: #757575 !important;
         background-color: #757575;
+
+        @media screen and (max-width: 600px) {
+          min-width: 60px !important;
+        }
+      }
+
+      &-hidden {
+        opacity: 0;
+        border-color: transparent !important;
       }
     }
   }

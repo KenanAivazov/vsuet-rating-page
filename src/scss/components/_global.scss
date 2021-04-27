@@ -3,6 +3,12 @@
 }
 
 .g-main {
+  &-table {
+    &:not(:first-of-type) {
+      margin-top: 20px;
+    }
+  }
+
   &-form {
     width: 100%;
     max-width: 600px;
