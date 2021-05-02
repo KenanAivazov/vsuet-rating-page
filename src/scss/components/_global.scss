@@ -28,6 +28,14 @@
   width: 100%;
 }
 
+.container {
+  max-width: 95%;
+
+  @media screen and (max-width: 600px) {
+    max-width: 100%;
+  }
+}
+
 .g-pointer-el {
   cursor: pointer;
 }

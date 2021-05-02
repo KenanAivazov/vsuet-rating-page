@@ -1,5 +1,7 @@
 <script>
   import {mapActions, mapMutations, mapState} from 'vuex';
+  import TableCard from '../global/table/view/Card';
+  import TableSimple from '../global/table/view/Simple'
 
   export default {
     data: () => ({
@@ -8,10 +10,7 @@
       button: {
         loading: false
       },
-
-      buttonVersus: {
-        loading: false
-      }
+      viewName: 'table-card'
     }),
 
     computed: {
@@ -20,6 +19,11 @@
         student: state => state.rating.student,
         tableHeader: state => state.rating.tableHeader,
       })
+    },
+
+    components: {
+      TableCard,
+      TableSimple
     },
 
     methods: {
@@ -43,38 +47,12 @@
         }
       },
 
-      detectStage(rating) {
-        if ( Number(rating) ) {
-          rating = Number(rating);
-
-          if (rating >= 85) return 1
-          else if (rating >= 75 && rating <= 84) return 2
-          else if (rating <= 74) return 3
-        }
-
-        if (rating === 'Отл') return 1
-        else if (rating === 'Хор') return 2
-        else if (rating === 'Удовл') return 3
-        else if (rating === 'Зачет') return 4
-
-        return false
-      },
-
-      getColor(rating) {
-        switch(this.detectStage(rating)) {
-          case 1:
-            return 'green'
-          case 2:
-            return 'orange'
-          case 3:
-            return 'red'
-          case 4:
-            return 'green'
-        }
-      },
-
       parseDate(date) {
         return (new Date(date)).toLocaleString('ru-RU')
+      },
+
+      changeDataView(component) {
+        this.viewName = component
       }
     },
   };
@@ -106,9 +84,9 @@
       </div>
     </div>
 
-    <v-row justify="center" class="mt-5">
+    <v-row justify="center" class="mt-5" v-if="student && student.recordBookNum">
       <v-col md="4">
-        <v-card class="mb-5" v-if="student && student.recordBookNum">
+        <v-card class="mb-5">
           <v-card-title>Карточка студента</v-card-title>
           <v-card-subtitle class="mt-1">
             <p class="mb-2">Номер зачётки: {{ student.recordBookNum }}</p>
@@ -124,65 +102,29 @@
         justify="center"
         ref="table"
     >
-      <v-col class="table-wrapper">
-        <v-expansion-panels focusable popout>
-          <v-expansion-panel
-              v-for="(rating, ratingIndex) in table"
-              :key="ratingIndex"
+      <v-col class="table-wrapper" v-if="table.length">
+        <div class="d-flex justify-center mb-4">
+          <v-btn
+              color="primary"
+              :outlined="viewName !== 'table-card'"
+              class="mr-2"
+              @click="changeDataView('table-card')"
+              large
           >
-            <v-expansion-panel-header>
-              <div class="table-header">
-                <h3 class="mb-0">
-                  {{ rating.lesson.name }}
-                </h3>
-                <h4 class="mt-2 mb-0">
-                  {{ rating.lesson.type }}
-                </h4>
-              </div>
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <div class="mt-3">
-                <a :href="rating.lesson.href" target="_blank" class="d-block mb-3">Оригинал</a>
+            Карточки
+          </v-btn>
 
-                <table ref="table" class="table">
-                  <thead>
-                  <tr
-                      v-for="(ratingHeader, ratingHeaderIndex) in rating.lesson.header"
-                  >
-                    <td
-                        v-for="(headerItem, headerItemIndex) in ratingHeader.children"
-                        :key="headerItemIndex"
-                        :rowspan="headerItem.rowSpan"
-                        :colspan="headerItem.colSpan"
-                        :hidden="!headerItem.text"
-                        :class="[
-                    {
-                      'table-item-primary': headerItem.text.includes('Итог по')
-                    },
+          <v-btn
+              color="primary"
+              :outlined="viewName !== 'table-simple'"
+              large
+              @click="changeDataView('table-simple')"
+          >
+            Таблица
+          </v-btn>
+        </div>
 
-                  ]"
-                    >
-                      {{ headerItem.text }}
-                    </td>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr>
-                    <td
-                        v-for="(value, valueIndex) in rating.value"
-                        :key="valueIndex"
-                    >
-                      <v-chip :color="getColor(value)">
-                        {{ value }}
-                      </v-chip>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
+        <component :is="viewName" :data="table" />
       </v-col>
     </v-row>
   </section>
@@ -230,7 +172,7 @@
       }
 
       td {
-        min-width: 70px;
+        min-width: 60px;
         font-size: 12px;
         text-align: center;
 
