@@ -73,8 +73,8 @@
         }
       },
 
-      hideHeaderElements(item, index) {
-        return [1].includes(index) && !item.text.includes('Итог по') && !item.text.includes('Экзамен');
+      parseDate(date) {
+        return (new Date(date)).toLocaleString('ru-RU')
       }
     },
   };
@@ -87,7 +87,7 @@
         <p class="mt-0 body-1 mb-3">
           Made by <a target="_blank" href="https://vk.com/kenan_aivazov">Kenan Ayvazov</a>
         </p>
-        <p class="body-1 mt-0 mb-5">Версия: 2.1.0</p>
+        <p class="body-1 mt-0 mb-5">Версия: 2.1.1</p>
         <v-form ref="form"
                 @submit.prevent="findRating"
                 class="d-flex flex-column align-center justify-center">
@@ -114,6 +114,7 @@
             <p class="mb-2">Номер зачётки: {{ student.recordBookNum }}</p>
             <p class="mb-2">Факультет: {{ student.faculty.name }}</p>
             <p class="mb-2">Группа: {{ student.group.name }}</p>
+            <p class="">Дата обновления: {{ parseDate(student.ratingUpdatedAt) }}</p>
           </v-card-subtitle>
         </v-card>
       </v-col>
