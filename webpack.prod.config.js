@@ -1,3 +1,4 @@
+require('dotenv').config();
 const path = require('path');
 const webpack = require('webpack');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
@@ -126,6 +127,9 @@ module.exports = {
         removeComments: true,
         collapseWhitespace: true
       },
+      title: 'Успеваемость студентов ВГУИТ',
+      description: 'Более удобная версия сайта с ведомостями с успеваемостями студентов ВГУИТ!',
+      url: 'https://rating.kenan.agency',
       template: './index.template.ejs',
     }),
     new webpack.ProvidePlugin({

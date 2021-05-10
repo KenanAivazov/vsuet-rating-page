@@ -14,46 +14,44 @@
           </h4>
         </div>
       </v-expansion-panel-header>
-      <v-expansion-panel-content>
-        <div class="mt-3">
-          <a :href="rating.lesson.href" target="_blank" class="d-block mb-3">Оригинал</a>
+      <v-expansion-panel-content class="pt-3">
+        <a :href="rating.lesson.href" target="_blank" class="d-block mb-3">Оригинал</a>
 
-          <table ref="table" class="table">
-            <thead>
-            <tr
-                v-for="(ratingHeader, ratingHeaderIndex) in rating.lesson.header"
-            >
-              <td
-                  v-for="(headerItem, headerItemIndex) in ratingHeader.children"
-                  :key="headerItemIndex"
-                  :rowspan="headerItem.rowSpan"
-                  :colspan="headerItem.colSpan"
-                  :hidden="!headerItem.text"
-                  :class="[
+        <table ref="table" class="table">
+          <thead>
+          <tr
+              v-for="(ratingHeader, ratingHeaderIndex) in rating.lesson.header"
+          >
+            <td
+                v-for="(headerItem, headerItemIndex) in ratingHeader.children"
+                :key="headerItemIndex"
+                :rowspan="headerItem.rowSpan"
+                :colspan="headerItem.colSpan"
+                :hidden="!headerItem.text"
+                :class="[
                     {
                       'table-item-primary': headerItem.text.includes('Итог')
                     },
 
                   ]"
-              >
-                {{ headerItem.text }}
-              </td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td
-                  v-for="(value, valueIndex) in rating.value"
-                  :key="valueIndex"
-              >
-                <v-chip :color="getColor(value)">
-                  {{ value }}
-                </v-chip>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
+            >
+              {{ headerItem.text }}
+            </td>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td
+                v-for="(value, valueIndex) in rating.value"
+                :key="valueIndex"
+            >
+              <v-chip :color="getColor(value)">
+                {{ value }}
+              </v-chip>
+            </td>
+          </tr>
+          </tbody>
+        </table>
       </v-expansion-panel-content>
     </v-expansion-panel>
   </v-expansion-panels>

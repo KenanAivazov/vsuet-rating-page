@@ -1,34 +1,32 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<title>Vue & PWA app</title>
+	<title><%= htmlWebpackPlugin.options.title %>, v.<%= process.env.VERSION %></title>
 	<!-- Links -->
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons">
-	<link rel="manifest" href="">
-	<link rel="cannonical" href="">
-	<link rel="dns-prefetch" href="">
+	<link rel="cannonical" href="<%= htmlWebpackPlugin.options.url %>">
+	<link rel="dns-prefetch" href="<%= htmlWebpackPlugin.options.url %>">
 	<!-- Meta tags -->
 	<meta charset="UTF-8">
-	<meta name="description" content="">
+	<meta name="description" content="<%= htmlWebpackPlugin.options.description %>">
 	<meta name="image" content="">
 	<meta http-equiv="x-dns-prefetch-control" content="on">
 	<meta name="apple-mobile-web-app-capable" content="yes"/>
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 	<!-- Schema.org -->
-	<meta itemprop="name" content="">
-	<meta itemprop="description" content="">
+	<meta itemprop="name" content="<%= htmlWebpackPlugin.options.title %>">
+	<meta itemprop="description" content="<%= htmlWebpackPlugin.options.description %>">
 	<meta itemprop="image" content="">
 	<!-- Twitter -->
 	<meta name="twitter:card" content="">
-	<meta name="twitter:title" content="">
-	<meta name="twitter:description" content="">
+	<meta name="twitter:title" content="<%= htmlWebpackPlugin.options.title %>">
+	<meta name="twitter:description" content="<%= htmlWebpackPlugin.options.description %>">
 	<!-- Facebook, Google+, Pinterest -->
-	<meta name="og:title" content="">
-	<meta name="og:description" content="">
+	<meta name="og:title" content="<%= htmlWebpackPlugin.options.title %>">
+	<meta name="og:description" content="<%= htmlWebpackPlugin.options.description %>">
 	<meta name="og:image" content="">
-	<meta name="og:url" content="">
-	<meta name="og:site_name" content="">
+	<meta name="og:url" content="<%= htmlWebpackPlugin.options.url %>">
 	<meta name="og:locale" content="ru_RU">
 	<meta name="og:type" content="website">
 	<!-- Other meta-tags -->
@@ -38,24 +36,9 @@
 	<meta name="cache-control" content="">
 	<meta property="og:locale" content="ru_RU">
 	<meta property="og:type" content="website">
-	<meta property="og:title" content="">
-	<meta property="og:description" content="">
-	<meta property="og:url" content="">
-	<meta property="og:site_name" content="">
-	<!--  Favicon & PWA icons -->
-	<link rel="shortcut icon" type="image/x-icon" href="">
-	<link rel="icon" type="image/png" sizes="192x192" href="">
-	<link rel="icon" type="image/png" sizes="96x96" href="">
-	<link rel="icon" type="image/png" sizes="16x16" href="">
-	<link rel="apple-touch-icon" sizes="57x57" href="">
-	<link rel="apple-touch-icon" sizes="60x60" href="">
-	<link rel="apple-touch-icon" sizes="72x72" href="">
-	<link rel="apple-touch-icon" sizes="76x76" href="">
-	<link rel="apple-touch-icon" sizes="114x114" href="">
-	<link rel="apple-touch-icon" sizes="120x120" href="">
-	<link rel="apple-touch-icon" sizes="144x144" href="">
-	<link rel="apple-touch-icon" sizes="152x152" href="">
-	<link rel="apple-touch-icon" sizes="180x180" href="">
+	<meta property="og:title" content="<%= htmlWebpackPlugin.options.title %>">
+	<meta property="og:description" content="<%= htmlWebpackPlugin.options.description %>">
+	<meta property="og:url" content="<%= htmlWebpackPlugin.options.url %>">
 </head>
 
 <body>

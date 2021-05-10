@@ -1,11 +1,13 @@
 <script>
   import {mapActions, mapMutations, mapState} from 'vuex';
   import TableCard from '../global/table/view/Card';
-  import TableSimple from '../global/table/view/Simple'
+  import TableSimple from '../global/table/view/Simple';
 
   export default {
     data: () => ({
-      recordBookNum: '',
+      recordBookNum: '' || localStorage.getItem('recordBookNum'),
+      lsRecordBook: localStorage.getItem('recordBookNum'),
+      appVersion: process.env.VERSION,
       isVersus: false,
       button: {
         loading: false
@@ -35,6 +37,22 @@
         unique: 'UNIQUE_SET'
       }),
 
+      saveUserRecordNum() {
+        localStorage.setItem('recordBookNum', this.recordBookNum);
+
+        if (localStorage.getItem('recordBookNum')) {
+          alert('Номер зачётки успешно сохранён! Теперь при заходе на сайт вам не нужно будет вводить номер зачётки повторно')
+        }
+      },
+
+      clearUserRecordNum() {
+        localStorage.removeItem('recordBookNum');
+
+        if (!localStorage.getItem('recordBookNum')) {
+          alert('Номер зачётки успешно удалён из локального хранилища!')
+        }
+      },
+
       findRating() {
         if ( this.$refs.form.validate() ) {
           this.button.loading = true;
@@ -62,10 +80,6 @@
   <section class="width-full">
     <div class="d-flex align-center justify-center g-main-wrapper mt-5">
       <div class="g-main-form">
-        <p class="mt-0 body-1 mb-3">
-          Made by <a target="_blank" href="https://vk.com/kenan_aivazov">Kenan Ayvazov</a>
-        </p>
-        <p class="body-1 mt-0 mb-5">Версия: 2.1.1</p>
         <v-form ref="form"
                 @submit.prevent="findRating"
                 class="d-flex flex-column align-center justify-center">
@@ -73,7 +87,9 @@
               outlined
               rounded
               required
-              prepend-inner-icon="search"
+              hide-details
+              append-icon="search"
+              @click:append="findRating"
               label="Номер зачётки"
               :loading="button.loading"
               :disabled="button.loading"
@@ -81,19 +97,41 @@
               v-model="recordBookNum"
           />
         </v-form>
+        <p class="caption mt-3 mb-0" v-if="!table.length">
+          <b>Обновление информации</b> с
+          <a href="http://rating.vsuet.ru/web/Ved/Default.aspx?ref=rating.kenan.agency" target="_blank" rel="noreferrer noopener">оф. сайта</a>
+          происходит 2 раза в день: в <b>12:00</b> и <b>00:00</b> (сбор данных занимает примерно час, но зачастую 45-50 минут). Во время обновления информации
+          <b>сервис не будет выполнять поиск</b>!
+        </p>
       </div>
     </div>
 
     <v-row justify="center" class="mt-5" v-if="student && student.recordBookNum">
-      <v-col md="4">
+      <v-col md="6">
         <v-card class="mb-5">
           <v-card-title>Карточка студента</v-card-title>
           <v-card-subtitle class="mt-1">
             <p class="mb-2">Номер зачётки: {{ student.recordBookNum }}</p>
             <p class="mb-2">Факультет: {{ student.faculty.name }}</p>
             <p class="mb-2">Группа: {{ student.group.name }}</p>
-            <p class="">Дата обновления: {{ parseDate(student.ratingUpdatedAt) }}</p>
+            <p class="mb-2">Дата обновления: {{ parseDate(student.ratingUpdatedAt) }}</p>
+            <p class="mb-0">
+              Made by <a target="_blank" href="https://vk.com/kenan_aivazov">Kenan Ayvazov</a>
+            </p>
           </v-card-subtitle>
+          <v-card-actions>
+            <v-btn color="primary" @click="saveUserRecordNum">
+              Сохранить
+            </v-btn>
+            <v-spacer />
+            <v-btn
+                color="primary"
+                v-if="lsRecordBook"
+                outlined
+                @click="clearUserRecordNum">
+              Удалить
+            </v-btn>
+          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
@@ -167,6 +205,14 @@
         &:nth-of-type(1) {
           td:nth-of-type(1), td:nth-of-type(2), td:nth-of-type(3) {
             display: none;
+          }
+
+          td {
+            &:nth-child(20) {
+              @media screen and (max-width: 600px) {
+                min-width: 60px;
+              }
+            }
           }
         }
       }

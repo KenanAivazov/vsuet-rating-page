@@ -101,8 +101,10 @@ export default {
     position: relative;
 
     thead {
-      td:nth-of-type(4) {
-        opacity: 0;
+      tr:first-of-type {
+        td:nth-of-type(4) {
+          opacity: 0;
+        }
       }
     }
 
