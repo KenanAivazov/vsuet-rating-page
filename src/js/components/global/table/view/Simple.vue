@@ -74,7 +74,7 @@ export default {
 
       if (rating === 'Отл') return 1
       else if (rating === 'Хор') return 2
-      else if (rating === 'Удовл') return 3
+      else if (rating === 'Удовл' || rating === 'Неуд') return 3
       else if (rating === 'Зачет') return 4
 
       return false
