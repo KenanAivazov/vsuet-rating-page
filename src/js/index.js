@@ -7,6 +7,7 @@ import {VueMaskDirective} from 'v-mask'
 import Vuetify, {
   VApp,
   VTextField,
+  VSelect,
   VBtn,
   VCard,
   VCardSubtitle,
@@ -36,6 +37,7 @@ Vue.use(Vuetify, {
   components: {
     VApp,
     VTextField,
+    VSelect,
     VBtn,
     VCard,
     VCardSubtitle,

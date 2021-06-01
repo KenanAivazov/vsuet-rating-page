@@ -12,6 +12,7 @@
       button: {
         loading: false
       },
+      studentGroup: null,
       viewName: 'table-card'
     }),
 
@@ -30,7 +31,8 @@
 
     methods: {
       ...mapActions({
-        getRating: 'rating/get'
+        getRating: 'rating/get',
+        getRatingByGroup: 'rating/getByGroup'
       }),
 
       ...mapMutations({
@@ -59,10 +61,17 @@
           this.getRating({
             recordBookNum: this.recordBookNum
           })
-            .finally(() => {
-              this.button.loading = false;
-            })
+              .catch(() => {
+                this.button.loading = false;
+              })
+              .finally(() => {
+                this.button.loading = false;
+              })
         }
+      },
+
+      changeStudentGroup() {
+        this.getRatingByGroup(this.studentGroup);
       },
 
       parseDate(date) {
@@ -113,7 +122,19 @@
           <v-card-subtitle class="mt-1">
             <p class="mb-2">Номер зачётки: {{ student.recordBookNum }}</p>
             <p class="mb-2">Факультет: {{ student.faculty.name }}</p>
-            <p class="mb-2">Группа: {{ student.group.name }}</p>
+            <p class="mb-2" v-if="student.groups.length >= 2">
+              <v-select v-model="studentGroup"
+                        :items="student.groups"
+                        @change="changeStudentGroup"
+                        item-text="name">
+                <template v-slot:prepend>
+                  Группа:
+                </template>
+              </v-select>
+            </p>
+            <p class="mb-2" v-else>
+              Группа: {{ student.groups[0].name }}
+            </p>
             <p class="mb-2">Дата обновления: {{ parseDate(student.ratingUpdatedAt) }}</p>
             <p class="mb-0">
               Made by <a target="_blank" href="https://vk.com/kenan_aivazov">Kenan Ayvazov</a>
