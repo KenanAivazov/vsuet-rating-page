@@ -122,7 +122,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: '../index.html',
       inject: true,
-      environment: process.env,
+      version: process.env.VERSION,
       minify: {
         removeComments: true,
         collapseWhitespace: true

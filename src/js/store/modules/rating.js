@@ -14,7 +14,7 @@ export default {
     averageRating: 0
   },
   actions: {
-    async get({ state, rootState, commit }, { recordBookNum }) {
+    async get({ state, rootState, commit }, { recordBookNum, groupId }) {
 
       let bookNum = recordBookNum || rootState.rating.student.recordBookNum;
 
@@ -26,11 +26,10 @@ export default {
           }
         } = await api.get('/rating/get', {
           params: {
-            student: bookNum
+            recordBookNum: bookNum,
+            groupId
           }
         });
-
-        console.log(data);
 
         commit('UNIQUE_SET', {
           name: 'table',
@@ -55,38 +54,5 @@ export default {
         }
       }
     },
-
-    async getByGroup({ state, rootState, commit }, groupId) {
-      let bookNum = rootState.rating.student.recordBookNum;
-
-      try {
-        const {
-          data: {
-            status,
-            data
-          }
-        } = await api.get('/rating/get/by-group', {
-          params: {
-            groupId,
-            bookNum
-          }
-        });
-
-        commit('UNIQUE_SET', {
-          name: 'table',
-          moduleName: 'rating',
-          value: data.rating
-        }, {
-          root: true
-        });
-
-      } catch(e) {
-        console.log(e)
-
-        if (e?.response?.data) {
-          alert(e?.response?.data?.message)
-        }
-      }
-    }
   }
 }

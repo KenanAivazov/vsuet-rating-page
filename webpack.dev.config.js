@@ -131,7 +131,7 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      environment: process.env,
+      version: process.env.VERSION,
       template: './index.template.ejs',
       title: 'Успеваемость студентов ВГУИТ',
       description: 'Более удобная версия сайта с ведомостями с успеваемостями студентов ВГУИТ!',

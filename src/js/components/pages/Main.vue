@@ -12,7 +12,7 @@
       button: {
         loading: false
       },
-      studentGroup: null,
+      studentGroup: JSON.parse(localStorage.getItem('studentGroup')),
       viewName: 'table-card'
     }),
 
@@ -41,14 +41,16 @@
 
       saveUserRecordNum() {
         localStorage.setItem('recordBookNum', this.recordBookNum);
+        localStorage.setItem('studentGroup', JSON.stringify(this.studentGroup));
 
-        if (localStorage.getItem('recordBookNum')) {
-          alert('Номер зачётки успешно сохранён! Теперь при заходе на сайт вам не нужно будет вводить номер зачётки повторно')
+        if (localStorage.getItem('recordBookNum') || localStorage.getItem('studentGroup')) {
+          alert('Номер зачётки и группа успешно сохранён! Теперь при заходе на сайт вам не нужно будет вводить номер зачётки повторно')
         }
       },
 
       clearUserRecordNum() {
         localStorage.removeItem('recordBookNum');
+        localStorage.removeItem('studentGroup');
 
         if (!localStorage.getItem('recordBookNum')) {
           alert('Номер зачётки успешно удалён из локального хранилища!')
@@ -59,7 +61,8 @@
         if ( this.$refs.form.validate() ) {
           this.button.loading = true;
           this.getRating({
-            recordBookNum: this.recordBookNum
+            recordBookNum: this.recordBookNum,
+            groupId: this.studentGroup?.value,
           })
               .catch(() => {
                 this.button.loading = false;
@@ -71,7 +74,17 @@
       },
 
       changeStudentGroup() {
-        this.getRatingByGroup(this.studentGroup);
+        console.log(this.studentGroup)
+        this.getRating({
+          recordBookNum: this.recordBookNum,
+          groupId: this.studentGroup.value,
+        })
+            .catch(() => {
+              this.button.loading = false;
+            })
+            .finally(() => {
+              this.button.loading = false;
+            })
       },
 
       parseDate(date) {
@@ -82,6 +95,9 @@
         this.viewName = component
       }
     },
+
+    mounted() {
+    }
   };
 </script>
 
@@ -126,6 +142,8 @@
               <v-select v-model="studentGroup"
                         :items="student.groups"
                         @change="changeStudentGroup"
+                        return-object="true"
+                        label="Выберите группу"
                         item-text="name">
                 <template v-slot:prepend>
                   Группа:
