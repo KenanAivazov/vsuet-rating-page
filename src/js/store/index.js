@@ -4,21 +4,16 @@ import api from './utils/api'
 Vue.use(Vuex);
 
 import rating from "./modules/rating";
-import student from "./modules/student";
+import schedule from "./modules/schedule";
 
 export default new Vuex.Store({
   modules: {
     rating,
-    student
+    schedule
   },
   state: {
-    modal: {
-      active: false,
-      content: '',
-      data: {
-        header: ''
-      }
-    }
+    welcomeModal: !Boolean(localStorage.getItem('studentInfo')),
+    userInfo: JSON.parse(localStorage.getItem('studentInfo'))
   },
 
   mutations: {

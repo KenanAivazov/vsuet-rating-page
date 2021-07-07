@@ -4,6 +4,7 @@ import router from './routes/route'
 import asyncData from './store/utils/asyncData'
 import { Ripple } from 'vuetify/lib/directives'
 import {VueMaskDirective} from 'v-mask'
+import PortalVue from 'portal-vue'
 import Vuetify, {
   VApp,
   VTextField,
@@ -28,6 +29,10 @@ import Vuetify, {
   VExpansionPanel,
   VExpansionPanelHeader,
   VExpansionPanelContent,
+  VBottomNavigation,
+  VIcon,
+  VBottomSheet,
+  VSheet,
 } from 'vuetify/lib'
 
 import ru from 'vuetify/es5/locale/ru'
@@ -58,11 +63,16 @@ Vue.use(Vuetify, {
     VExpansionPanel,
     VExpansionPanelHeader,
     VExpansionPanelContent,
+    VBottomNavigation,
+    VIcon,
+    VBottomSheet,
+    VSheet,
   },
   directives: {
     Ripple
   }
 });
+Vue.use(PortalVue);
 
 Vue.directive('mask', VueMaskDirective);
 

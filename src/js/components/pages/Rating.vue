@@ -60,6 +60,7 @@
       findRating() {
         if ( this.$refs.form.validate() ) {
           this.button.loading = true;
+
           this.getRating({
             recordBookNum: this.recordBookNum,
             groupId: this.studentGroup?.value,
@@ -122,12 +123,6 @@
               v-model="recordBookNum"
           />
         </v-form>
-        <p class="caption mt-3 mb-0" v-if="!table.length">
-          <b>Обновление информации</b> с
-          <a href="http://rating.vsuet.ru/web/Ved/Default.aspx?ref=rating.kenan.agency" target="_blank" rel="noreferrer noopener">оф. сайта</a>
-          происходит 2 раза в день: в <b>12:00</b> и <b>00:00</b> (сбор данных занимает примерно час, но зачастую 45-50 минут). Во время обновления информации
-          <b>сервис не будет выполнять поиск</b>!
-        </p>
       </div>
     </div>
 

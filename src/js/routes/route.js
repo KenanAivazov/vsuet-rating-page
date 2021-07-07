@@ -2,13 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import App from '../App'
 import NotFound from '../components/global/NotFound'
-import Main from '../components/pages/Main'
-
-// store
-import store from '../store/index'
-
-// middleware
-import role from './middleware/role'
+import Rating from '../components/pages/Rating'
+import Schedule from "../components/pages/Schedule";
 
 Vue.use(VueRouter);
 
@@ -22,11 +17,15 @@ const router = new VueRouter({
       children: [
         {
           path: '/',
-          component: Main,
-          icon: 'home',
-          name: 'main',
-          title: 'Главная',
-        }]
+          component: Rating,
+          name: 'Rating',
+        },
+        {
+          path: '/schedule',
+          component: Schedule,
+          name: 'Schedule',
+        }
+        ]
     },
     {
       path: '*',
